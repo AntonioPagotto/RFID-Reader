@@ -70,8 +70,8 @@ public class RfidBriApplication {
 		MessageProperties messageProperties = new MessageProperties();
 		Message message = new Message(messageBody.getBytes(), messageProperties);
 
-		queueSender.convertAndSend("direct-exchange", "rfid-routing-key", message);
-		queueSender.send(message);
+		queueSender.convertAndSend("direct-exchange", "rfid-routing-key", messageBody);
+//		queueSender.send(message);
 	}
 
 }
