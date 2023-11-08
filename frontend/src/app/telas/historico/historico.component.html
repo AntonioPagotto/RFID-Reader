@@ -1,0 +1,24 @@
+<h1 class="title">HISTORICO</h1>
+
+<table>
+  <thead>
+    <tr>
+      <th>TAGID</th>
+      <th>Nome</th>
+      <th>Responsável</th>
+      <th>Email Responsável</th>
+      <th>Localização</th>
+      <th>Horário</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr *ngFor="let tag of tags">
+      <td>{{ tag.TAGID }}</td>
+      <td>{{ tag.Nome }}</td>
+      <td>{{ tag.Responsavel }}</td>
+      <td>{{ tag.EmailResponsavel }}</td>
+      <td>{{ tag.Localizacao }}</td>
+      <td>{{ tag.Horario }}</td>
+    </tr>
+  </tbody>
+</table>

@@ -1,0 +1,22 @@
+<h1 class="title">INVENTÁRIO</h1>
+
+<table>
+  <thead>
+    <tr>
+      <th>Tag ID</th>
+      <th>Item</th>
+      <th>Responsável</th>
+      <th>Email Responsável</th>
+      <th>Localização</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr *ngFor="let tag of tags">
+      <td>{{ tag.tagId }}</td>
+      <td>{{ tag.name }}</td>
+      <td>{{ tag.responsibleName }}</td>
+      <td>{{ tag.responsibleEmail }}</td>
+      <td>{{ tag.place }}</td>
+    </tr>
+  </tbody>
+</table>

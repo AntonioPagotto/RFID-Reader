@@ -11,6 +11,10 @@ public class Configuration {
 
     private String configStateType;
 
+    public Configuration(String configStateType) {
+        this.configStateType = configStateType;
+    }
+
     public String getId() {
         return id;
     }

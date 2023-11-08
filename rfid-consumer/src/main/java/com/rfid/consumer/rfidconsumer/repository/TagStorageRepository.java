@@ -7,4 +7,8 @@ public interface TagStorageRepository extends MongoRepository<Tag, String> {
 
     boolean existsByTagId(String tagId);
 
+    Tag findByTagId(String tagId);
+
+    void deleteByTagId(String tagId);
+
 }
