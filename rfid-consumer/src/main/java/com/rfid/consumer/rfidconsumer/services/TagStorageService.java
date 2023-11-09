@@ -5,6 +5,8 @@ import com.rfid.consumer.rfidconsumer.entities.Tag;
 import com.rfid.consumer.rfidconsumer.repository.TagStorageRepository;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 @Service
@@ -12,8 +14,11 @@ public class TagStorageService {
 
     private final TagStorageRepository tagStorageRepository;
 
-    public TagStorageService(TagStorageRepository tagStorageRepository) {
+    private final HistoryService historyService;
+
+    public TagStorageService(TagStorageRepository tagStorageRepository, HistoryService historyService) {
         this.tagStorageRepository = tagStorageRepository;
+        this.historyService = historyService;
     }
 
     public boolean verifyIfIsAnRegistratedTag(String tagId) {
@@ -22,7 +27,9 @@ public class TagStorageService {
     }
 
     public void registerTag() {
-        Tag tag = new Tag("HE2001093", "Adesivo", null, "Antonio", "antoniopagotto121@gmail.com", "in");
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy 'as' HH:mm");
+        String formattedDateTime = LocalDateTime.now().format(formatter);
+        Tag tag = new Tag("HE2001093", "Adesivo", null, "Antonio", "antoniopagotto121@gmail.com", "in", formattedDateTime);
         tagStorageRepository.save(tag);
     }
 
@@ -30,7 +37,7 @@ public class TagStorageService {
         return tagStorageRepository.findAll();
     }
 
-    public void trackTag(String tagId, String antenna) {
+    public Tag trackTag(String tagId, String antenna) {
 
         Tag tag = tagStorageRepository.findByTagId(tagId);
 
@@ -43,11 +50,13 @@ public class TagStorageService {
             tag.setLastAntenna(antenna);
         }
 
-        tag.setPlace((tag.getState() == null) ? null : (tag.getState().equals("in") ? ("Dentro de " + tag.getLastAntenna()) : ("Saiu de " + tag.getLastAntenna())));
+        tag.setPlace((tag.getState() == null) ? null : (tag.getState().equals("in") ? ("Dentro da sala " + tag.getLastAntenna()) : ("Corredor")));
 
-        // salvamos a alteração no banco
-        tagStorageRepository.save(tag);
+        // Salva a movimentação no histórico
+        historyService.saveTagHistory(tag);
 
+        // Salvando o estado atual da tag
+        return tagStorageRepository.save(tag);
     }
 
 

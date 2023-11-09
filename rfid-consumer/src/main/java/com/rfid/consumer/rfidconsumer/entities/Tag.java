@@ -15,12 +15,14 @@ public class Tag {
     private String responsibleName;
     private String responsibleEmail;
     private String state;
+    private String date;
 
-    public Tag(String tagId, String name, String lastAntenna, String responsibleName, String responsibleEmail, String state) {
+    public Tag(String tagId, String name, String lastAntenna, String responsibleName, String responsibleEmail, String state, String date) {
         this.tagId = tagId;
         this.name = name;
         this.lastAntenna = lastAntenna;
-        this.place = (state == null) ? null : (state.equals("in") ? ("Dentro de " + lastAntenna) : ("Saiu de " + lastAntenna));
+        this.date = date;
+        this.place = (state == null) ? null : (state.equals("in") ? ("Dentro da sala " + lastAntenna) : ("Corredor"));
         this.responsibleName = responsibleName;
         this.responsibleEmail = responsibleEmail;
         this.state = state;
@@ -91,5 +93,13 @@ public class Tag {
 
     public void setState(String state) {
         this.state = state;
+    }
+
+    public String getDate() {
+        return date;
+    }
+
+    public void setDate(String date) {
+        this.date = date;
     }
 }

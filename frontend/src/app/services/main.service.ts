@@ -24,5 +24,27 @@ export class MainService{
         });
     }
 
+    getTagsHistory(): Observable<TagInfo[]> {
+
+        const headers= new HttpHeaders()
+            .set('content-type', 'application/json')
+            .set('Access-Control-Allow-Origin', '*');
+
+        return this.http.get<TagInfo[]>(`${ this.apiUrl }/historico`, {
+            headers : headers
+        });
+    }
+
+    getTagDetail(tagId: string): Observable<TagInfo[]> {
+
+        const headers= new HttpHeaders()
+            .set('content-type', 'application/json')
+            .set('Access-Control-Allow-Origin', '*');
+
+        return this.http.get<TagInfo[]>(`${ this.apiUrl }/historico/${tagId}`, {
+            headers : headers
+        });
+    }
+
 
 }

@@ -18,8 +18,6 @@ public class ConfigurationService {
 
         Configuration config = configurationRepository.findAll().get(0);
 
-        System.out.println(config.getConfigStateType());
-
         return config.getConfigStateType();
     }
 

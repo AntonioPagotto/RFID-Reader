@@ -7,4 +7,5 @@ export interface TagInfo {
     responsibleName: string
     responsibleEmail: string
     state: string
+    date: string
 }

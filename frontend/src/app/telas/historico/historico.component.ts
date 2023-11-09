@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 import { MainService } from '../../services/main.service';
+import { TagInfo } from 'src/app/models/tagInfo.model';
 
 @Component({
   selector: 'historico-component',
@@ -8,11 +9,14 @@ import { MainService } from '../../services/main.service';
 })
 export class HistoricoComponent {
 
-  tags = [
-    { TAGID: 1, Nome: 'Tag 1', Responsavel: 'João', EmailResponsavel: 'joao@email.com',
-      Localizacao: 'São Paulo', Horario: '08:00 - 17:00' },
-    { TAGID: 2, Nome: 'Tag 2', Responsavel: 'Maria', EmailResponsavel: 'maria@email.com',
-      Localizacao: 'Rio de Janeiro', Horario: '09:00 - 18:00' },
-    // adicione mais tags aqui
-  ];
+  tags : TagInfo[] = []
+
+  constructor(private mainService: MainService) {}
+
+  ngOnInit() {
+    this.mainService.getTagsHistory().subscribe((tags: any) => {
+      this.tags = tags;
+    });
+  }
+
 }

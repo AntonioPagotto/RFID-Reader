@@ -10,6 +10,7 @@ import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
 
 @Component
@@ -31,35 +32,56 @@ public class QueueConsumer {
         this.emailService = emailService;
     }
 
-    @RabbitListener(queues = {"${queue.name}"})
-    public void receive(@Payload String message) throws RuntimeException {
+    @RabbitListener(queues = "${queue.name}")
+    public void receive(@Payload String message) {
         String[] parts = message.split(" ");
         String tagId = parts[0];
         String antenna = parts[1];
 
-        System.out.println(message + "  " + LocalDateTime.now());
-
         String configStateType = configurationService.getConfiguration();
 
+        switch (configStateType) {
+            // Modo de leitura: registry
+            case "registro":
+                System.out.println("Registrando tag");
+                registerTag(tagId, antenna);
+                break;
 
-        if(configStateType.equals("registry")){
-            Tag tagRegistration = new Tag();
-            tagRegistration.setLastAntenna(antenna);
-            tagRegistration.setTagId(tagId);
-            registrationService.setTagIdAndAntenna(tagRegistration);
+            // Modo de leitura: tracking
+            case "rastreio":
+                System.out.println("Rastreando tag");
+                trackTag(tagId, antenna);
+                break;
+
+            default:
+                System.out.println("Nenhuma configuração encontrada");
+                break;
         }
 
+    }
 
-        //Se o modo de configuração estiver como "tracking" e a tag lida for registrada, entao...
-        if(configStateType.equals("tracking") && tagStorageService.verifyIfIsAnRegistratedTag(tagId)){
+    private void registerTag(String tagId, String antenna) {
+        Tag tagRegistration = new Tag();
+        tagRegistration.setLastAntenna(antenna);
+        tagRegistration.setTagId(tagId);
+        registrationService.setTagIdAndAntenna(tagRegistration);
+    }
 
-            tagStorageService.trackTag(tagId, antenna);
-
-            // Enviar e-mail....
-//            emailService.sendSimpleMessage("antoniopagotto121@gmail.com", "RFID - Tag Tracking", "A tag " + tagId + " foi lida na antena " + antenna + "!");
-
+    private void trackTag(String tagId, String antenna) {
+        if (tagStorageService.verifyIfIsAnRegistratedTag(tagId)) {
+            Tag savedTag = tagStorageService.trackTag(tagId, antenna);
+            sendEmail(savedTag);
         }
+    }
 
+    private void sendEmail(Tag savedTag) {
+        try {
+            System.out.println("Enviando email");
+            String subject = "Equipamento Rastreado";
+            emailService.sendEmail(savedTag.getResponsibleEmail(), subject, savedTag);
+        } catch (Exception e) {
+            System.out.println("Erro ao enviar e-mail: " + e.getMessage());
+        }
     }
 
 }

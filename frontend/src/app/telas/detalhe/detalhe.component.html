@@ -1,22 +1,26 @@
-<h1 class="title">INVENTÁRIO</h1>
+<h1 class="title">{{id}}
+  <h4>HISTÓRICO DO ITEM</h4>
+</h1>
 
 <table>
   <thead>
     <tr>
-      <th>Tag ID</th>
-      <th>Item</th>
+      <th>TAGID</th>
+      <th>Nome</th>
       <th>Responsável</th>
       <th>Email Responsável</th>
-      <th>Localização</th>
+      <th>Movimentação</th>
+      <th>Horário</th>
     </tr>
   </thead>
   <tbody>
     <tr *ngFor="let tag of tags">
-      <td><a [routerLink]="['/detalhe', tag.tagId]">{{ tag.tagId }}</a></td>
+      <td>{{ tag.tagId }}</td>
       <td>{{ tag.name }}</td>
       <td>{{ tag.responsibleName }}</td>
       <td>{{ tag.responsibleEmail }}</td>
       <td>{{ tag.place }}</td>
+      <td>{{ tag.date }}</td>
     </tr>
   </tbody>
 </table>

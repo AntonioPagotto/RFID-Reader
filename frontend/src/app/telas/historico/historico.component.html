@@ -1,4 +1,4 @@
-<h1 class="title">HISTORICO</h1>
+<h1 class="title">HISTORICO DE MOVIMENTAÇÕES</h1>
 
 <table>
   <thead>
@@ -7,18 +7,18 @@
       <th>Nome</th>
       <th>Responsável</th>
       <th>Email Responsável</th>
-      <th>Localização</th>
+      <th>Movimentação</th>
       <th>Horário</th>
     </tr>
   </thead>
   <tbody>
     <tr *ngFor="let tag of tags">
-      <td>{{ tag.TAGID }}</td>
-      <td>{{ tag.Nome }}</td>
-      <td>{{ tag.Responsavel }}</td>
-      <td>{{ tag.EmailResponsavel }}</td>
-      <td>{{ tag.Localizacao }}</td>
-      <td>{{ tag.Horario }}</td>
+        <td><a [routerLink]="['/detalhe', tag.tagId]">{{ tag.tagId }}</a></td>
+        <td>{{ tag.name }}</td>
+        <td>{{ tag.responsibleName }}</td>
+        <td>{{ tag.responsibleEmail }}</td>
+        <td>{{ tag.place }}</td>
+        <td>{{ tag.date }}</td>
     </tr>
   </tbody>
 </table>

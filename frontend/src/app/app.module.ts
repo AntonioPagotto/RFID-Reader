@@ -12,13 +12,15 @@ import { MatIconModule } from '@angular/material/icon';
 import { MainService } from './services/main.service';
 import { CadastroComponent } from './telas/cadastro/cadastro.component';
 import { HistoricoComponent } from './telas/historico/historico.component';
+import { DetalheComponent } from './telas/detalhe/detalhe.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     InventarioComponent,
     CadastroComponent,
-    HistoricoComponent
+    HistoricoComponent,
+    DetalheComponent
   ],
   imports: [
     BrowserModule,
