@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.List;
 
 @RestController
-@RequestMapping(path = "/historico")
+@RequestMapping(path = "/history")
 public class HistoryController {
 
     @Autowired

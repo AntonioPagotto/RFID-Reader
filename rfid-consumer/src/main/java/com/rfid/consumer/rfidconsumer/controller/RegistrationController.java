@@ -12,13 +12,13 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping(path = "/registration")
+@RequestMapping(path = "/register")
 public class RegistrationController {
 
     @Autowired
     private RegistrationService registrationService;
 
-    @PostMapping(path = "/register-tag")
+    @PostMapping
     public void registerTag(@RequestBody TagRegistrationRequest request){
         registrationService.setTagNameAndResponsible(request.getTagName(), request.getResponsibleName(), request.getResponsibleEmail());
     }

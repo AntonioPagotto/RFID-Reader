@@ -19,6 +19,8 @@ public class EmailService {
         this.emailSender = emailSender;
     }
 
+
+    // Envia e-mail via JavaMailSender
     public void sendEmail(String to, String subject, Tag tag) throws MessagingException {
         MimeMessage message = emailSender.createMimeMessage();
         MimeMessageHelper helper = new MimeMessageHelper(message, true, "UTF-8");
@@ -28,6 +30,7 @@ public class EmailService {
         emailSender.send(message);
     }
 
+    // Montando HTML do e-mail
     private String getHtml(Tag savedTag){
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy 'as' HH:mm");
         String formattedDateTime = LocalDateTime.now().format(formatter);

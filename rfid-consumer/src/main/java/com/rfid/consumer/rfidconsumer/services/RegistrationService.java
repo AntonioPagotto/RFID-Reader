@@ -24,10 +24,8 @@ public class RegistrationService {
         this.tagStorageRepository = tagStorageRepository;
     }
 
-    public TagRegistration getLastTagInRegistration() {
-        return registrationRepository.findAll().get(0);
-    }
 
+    // Seta tagId e antenna para a Tag que está em registro
     public void setTagIdAndAntenna(Tag tagRegistration) {
 
         TagRegistration tag = registrationRepository.findAll().get(0);
@@ -38,15 +36,16 @@ public class RegistrationService {
         tagStorageRepository.deleteByTagId(tag.getTagId());
         tagStorageRepository.save(tag);
 
-        Configuration configuration = new Configuration("tracking");
+        // Setando modo de leitura para TRACKING
+        Configuration configuration = new Configuration("TRACKING");
         configurationRepository.deleteAll();
         configurationRepository.save(configuration);
 
     }
 
+    // Seta nome, responsável e email do responsável para tag em registro
     public void setTagNameAndResponsible(String tagName, String responsibleName, String responsibleEmail) {
 
-//        TagRegistration tagRegistration = registrationRepository.findAll().get(0);
         TagRegistration tagRegistration = new TagRegistration();
         tagRegistration.setName(tagName);
         tagRegistration.setResponsibleName(responsibleName);
@@ -56,8 +55,8 @@ public class RegistrationService {
         registrationRepository.deleteAll();
         registrationRepository.save(tagRegistration);
 
-        //Settando modo de leitura para registro
-        Configuration configuration = new Configuration("registry");
+        // Setando modo de leitura para REGISTER
+        Configuration configuration = new Configuration("REGISTER");
         configurationRepository.deleteAll();
         configurationRepository.save(configuration);
     }

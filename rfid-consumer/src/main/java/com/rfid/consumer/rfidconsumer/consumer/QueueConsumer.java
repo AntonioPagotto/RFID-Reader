@@ -32,23 +32,28 @@ public class QueueConsumer {
         this.emailService = emailService;
     }
 
+    // Consumer responsável por ouvir a fila do RabbitMQ
     @RabbitListener(queues = "${queue.name}")
     public void receive(@Payload String message) {
+
+        // Tratando a mensagem, e pegando tagId e antenna
         String[] parts = message.split(" ");
         String tagId = parts[0];
         String antenna = parts[1];
 
+        // Lendo no banco de dados o tipo de leitura configurado (REGISTER ou TRACKING)
         String configStateType = configurationService.getConfiguration();
 
         switch (configStateType) {
-            // Modo de leitura: registry
-            case "registro":
+
+            // Modo de leitura: REGISTER
+            case "REGISTER":
                 System.out.println("Registrando tag");
                 registerTag(tagId, antenna);
                 break;
 
-            // Modo de leitura: tracking
-            case "rastreio":
+            // Modo de leitura: TRACKING
+            case "TRACKING":
                 System.out.println("Rastreando tag");
                 trackTag(tagId, antenna);
                 break;
@@ -60,6 +65,7 @@ public class QueueConsumer {
 
     }
 
+    // Registra tagId e antenna na Tag que está em modo registro
     private void registerTag(String tagId, String antenna) {
         Tag tagRegistration = new Tag();
         tagRegistration.setLastAntenna(antenna);
@@ -67,13 +73,18 @@ public class QueueConsumer {
         registrationService.setTagIdAndAntenna(tagRegistration);
     }
 
+    // Envia tagId e antenna captados para o método trackTag e envia um e-mail informando
+    // ao responsável que houve um movimento do objeto
     private void trackTag(String tagId, String antenna) {
         if (tagStorageService.verifyIfIsAnRegistratedTag(tagId)) {
             Tag savedTag = tagStorageService.trackTag(tagId, antenna);
+            // Envia e-mail
             sendEmail(savedTag);
         }
     }
 
+
+    // Envia e-mail para o responsável
     private void sendEmail(Tag savedTag) {
         try {
             System.out.println("Enviando email");

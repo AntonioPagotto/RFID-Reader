@@ -14,6 +14,7 @@ public class ConfigurationService {
         this.configurationRepository = configurationRepository;
     }
 
+    // Busca no banco de dados o método de leitura atual (REGISTER ou TRACKING)
     public String getConfiguration() {
 
         Configuration config = configurationRepository.findAll().get(0);
