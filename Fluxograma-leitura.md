@@ -1,11 +1,9 @@
 ```mermaid
 graph TD
-    A[Início] --> B{Extrai informações da leitura}
-    B --> C{Cria chave única}
-    C --> D{A chave existe no registro e <br>a última leitura foi há menos<br>de 5 segundos?}
-    D -- Não --> E[Adiciona/atualiza a chave no registro com o novo timestamp]
-    D -- Sim --> F[Remove a chave do registro]
-    F --> E
-    E --> G[Envia leitura para a fila do RabbitMQ]
+    A[Leitura realizada] --> C{Cria-se uma chave única}
+    C --> D{A chave não existe no registro ou<br>se existir, a última leitura<br>dessa chave foi há menos<br>de 5 segundos?}
+    D -- Não --> E[Adiciona/atualiza a chave no<br>registro com o novo timestamp]
+    D -- Sim --> H[Fim]
+    E --> G[Envia leitura para<br> a fila do RabbitMQ]
     G --> H[Fim]
 ```
