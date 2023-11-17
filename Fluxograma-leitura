@@ -1,3 +1,4 @@
+```mermaid
 graph TD
     A[Início] --> B{Extrai informações da leitura}
     B --> C{Cria chave única}
@@ -7,3 +8,4 @@ graph TD
     F --> E
     E --> G[Envia leitura para a fila do RabbitMQ]
     G --> H[Fim]
+```
