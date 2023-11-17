@@ -1,3 +1,4 @@
+graph TD
     A[Início] --> B{Extrai informações da leitura}
     B --> C{Cria chave única}
     C --> D{A chave existe no registro e a última leitura foi há menos de 5 segundos?}
