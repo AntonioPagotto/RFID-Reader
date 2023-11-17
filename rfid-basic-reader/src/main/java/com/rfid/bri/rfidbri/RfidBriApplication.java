@@ -6,6 +6,9 @@ import org.springframework.amqp.core.MessageProperties;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
+import java.util.HashMap;
+import java.util.Map;
+
 
 @SpringBootApplication
 public class RfidBriApplication {
@@ -17,6 +20,8 @@ public class RfidBriApplication {
 	private static String savedTagData;
 
 	private static AmqpTemplate queueSender;
+
+	private static Map<String, Long> savedRecords = new HashMap<>();
 
 	public RfidBriApplication(AmqpTemplate queueSender) {
 		this.queueSender = queueSender;
@@ -49,21 +54,40 @@ public class RfidBriApplication {
 	}
 
 	public static void handleEvent(BasicReaderEvent event) {
+
 		String[] parts = event.getTagDataString().split(" ");
 		long timestamp = Long.parseLong(parts[2]);
 		String antenna = parts[0];
 		String tagData = parts[3];
+		String key = antenna + "-" + tagData;
+
+		System.out.println("[LOG] Leitura realizada pela antena: " + antenna + " da TAG: " + tagData);
+//		System.out.println(!savedRecords.containsKey(key));
+//		System.out.println(savedRecords);
+//		System.out.println(key);
+
 		// Só adiciono na fila do RabbitMQ as tags que não foram lidas nos últimos 5 segundos ou que foram lidas em antenas diferentes
-		if (savedTimeStamp == 0 || ((timestamp - savedTimeStamp) > 5000 || !antenna.equals(savedAntenna))) {
-			savedTimeStamp = timestamp;
-			savedAntenna = antenna;
-			savedTagData = tagData;
+		if (!savedRecords.containsKey(key) || (timestamp - savedRecords.get(key)) > 5000) {
+
+			if(savedRecords.containsKey(key) && (timestamp - savedRecords.get(key)) > 5000){
+				// Limpa os dados da tag que não foram lidos nos últimos 5 segundos
+				savedRecords.remove(key);
+			}
+
+			// Inserindo antena + tag + timestamp no map
+			savedRecords.put(key, timestamp);
+
+			System.out.println("[LOG] Enviando para a fila do RabbitMQ: " + antenna + " da TAG: " + tagData);
+//			savedTimeStamp = timestamp;
+//			savedAntenna = antenna;
+//			savedTagData = tagData;
 			send(tagData, antenna);
 		}
+
 	}
 
 	public static void send(String tagData, String antenna){
-		System.out.println("Adicionada a fila TAGID: " + tagData + " Antena: " + antenna);
+//		System.out.println("Adicionada a fila TAGID: " + tagData + " Antena: " + antenna);
 
 		String messageBody = tagData + " " + antenna;
 
@@ -71,7 +95,6 @@ public class RfidBriApplication {
 		Message message = new Message(messageBody.getBytes(), messageProperties);
 
 		queueSender.convertAndSend("direct-exchange", "rfid-routing-key", messageBody);
-//		queueSender.send(message);
 	}
 
 }
